@@ -45,7 +45,7 @@ and an integration guide, but it leaves out lots of details and there's a huge
 number of undocumented (or even reserved) registers which need to be configured
 to get a picture out of the camera.
 
-This library is using Adafruit's OV7670 driver from https://github.com/adafruit/Adafruit_OV7670.git
+This library is using Adafruit's OV7670 driver from <https://github.com/adafruit/Adafruit_OV7670.git>
 
 I'm aware that there's actually a Pico implementation in that repo, but I had
 already written most of my code before I found it. Also, the "arch" they have
@@ -131,7 +131,7 @@ character map is designed to look best using **light text on a dark background**
 
 Here's an example picture of a cat ornament:
 
-```
+```text
 +++++************************************************+++++++<
 +*******************************************************++++<
 ********************************************************++++<
