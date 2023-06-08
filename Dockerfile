@@ -10,11 +10,14 @@ RUN apt update && apt install --no-install-recommends -y\
     automake autoconf build-essential texinfo libtool libftdi-dev libusb-1.0-0-dev git\
     bash-completion python3 ssh ca-certificates
 
-# Project directory should be copied to pi-pico
-RUN mkdir -p /var/pi-pico/ext/pico-sdk
-COPY . /var/pi-pico/
-WORKDIR /var/pi-pico
-RUN git clone https://github.com/raspberrypi/pico-sdk.git ext/pico-sdk
-
 # Setup environment
-ENV PICO_SDK_PATH="/var/pi-pico/ext/pico-sdk"
+ENV PROJECT_PATH='/var/pi-pico'
+ENV PICO_SDK_PATH="${PROJECT_PATH}/ext/pico-sdk"
+
+# Project directory should be copied to pi-pico
+RUN mkdir -p ${PICO_SDK_PATH}
+COPY . ${PROJECT_PATH}
+WORKDIR ${PROJECT_PATH}
+
+# Clone pico-sdk
+RUN git clone https://github.com/raspberrypi/pico-sdk.git ${PICO_SDK_PATH}
