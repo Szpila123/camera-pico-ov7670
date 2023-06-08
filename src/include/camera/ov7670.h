@@ -8,7 +8,7 @@
 
 // IMPORTANT: #include ALL of the arch-specific .h files here.
 // They have #ifdef checks to only take effect on the active architecture.
-//#include "arch/samd51.h"
+// #include "arch/samd51.h"
 
 #if defined(ARDUINO)
 #include <Arduino.h>
@@ -25,7 +25,11 @@
 // or all of these, they should go in the device-specific .c file with a
 // !defined(ARDUINO) around them.
 #define OV7670_delay_ms(x) sleep_ms(x)
-#define OV7670_pin_output(pin) { gpio_init(pin); gpio_set_dir(pin, GPIO_OUT); }
+#define OV7670_pin_output(pin)                                                                                         \
+    {                                                                                                                  \
+        gpio_init(pin);                                                                                                \
+        gpio_set_dir(pin, GPIO_OUT);                                                                                   \
+    }
 #define OV7670_pin_write(pin, hi) gpio_put(pin, !!hi)
 #endif // end platforms
 
@@ -35,39 +39,44 @@ typedef int OV7670_pin;
 typedef int OV7670_arch;
 
 /** Status codes returned by some functions */
-typedef enum {
-  OV7670_STATUS_OK = 0,         ///< Success
-  OV7670_STATUS_ERR_MALLOC,     ///< malloc() call failed
-  OV7670_STATUS_ERR_PERIPHERAL, ///< Peripheral (e.g. timer) not found
+typedef enum
+{
+    OV7670_STATUS_OK = 0,         ///< Success
+    OV7670_STATUS_ERR_MALLOC,     ///< malloc() call failed
+    OV7670_STATUS_ERR_PERIPHERAL, ///< Peripheral (e.g. timer) not found
 } OV7670_status;
 
 /** Supported color formats */
-typedef enum {
-  OV7670_COLOR_RGB = 0, ///< RGB565 big-endian
-  OV7670_COLOR_YUV,     ///< YUV/YCbCr 4:2:2 big-endian
+typedef enum
+{
+    OV7670_COLOR_RGB = 0, ///< RGB565 big-endian
+    OV7670_COLOR_YUV,     ///< YUV/YCbCr 4:2:2 big-endian
 } OV7670_colorspace;
 
 /** Supported sizes (VGA division factor) for OV7670_set_size() */
-typedef enum {
-  OV7670_SIZE_DIV1 = 0, ///< 640 x 480
-  OV7670_SIZE_DIV2,     ///< 320 x 240
-  OV7670_SIZE_DIV4,     ///< 160 x 120
-  OV7670_SIZE_DIV8,     ///< 80 x 60
-  OV7670_SIZE_DIV16,    ///< 40 x 30
+typedef enum
+{
+    OV7670_SIZE_DIV1 = 0, ///< 640 x 480
+    OV7670_SIZE_DIV2,     ///< 320 x 240
+    OV7670_SIZE_DIV4,     ///< 160 x 120
+    OV7670_SIZE_DIV8,     ///< 80 x 60
+    OV7670_SIZE_DIV16,    ///< 40 x 30
 } OV7670_size;
 
-typedef enum {
-  OV7670_TEST_PATTERN_NONE = 0,       ///< Disable test pattern
-  OV7670_TEST_PATTERN_SHIFTING_1,     ///< "Shifting 1" pattern
-  OV7670_TEST_PATTERN_COLOR_BAR,      ///< 8 color bars
-  OV7670_TEST_PATTERN_COLOR_BAR_FADE, ///< Color bars w/fade to white
+typedef enum
+{
+    OV7670_TEST_PATTERN_NONE = 0,       ///< Disable test pattern
+    OV7670_TEST_PATTERN_SHIFTING_1,     ///< "Shifting 1" pattern
+    OV7670_TEST_PATTERN_COLOR_BAR,      ///< 8 color bars
+    OV7670_TEST_PATTERN_COLOR_BAR_FADE, ///< Color bars w/fade to white
 } OV7670_pattern;
 
-typedef enum {
-  OV7670_NIGHT_MODE_OFF = 0, ///< Disable night mode
-  OV7670_NIGHT_MODE_2,       ///< Night mode 1/2 frame rate
-  OV7670_NIGHT_MODE_4,       ///< Night mode 1/4 frame rate
-  OV7670_NIGHT_MODE_8,       ///< Night mode 1/8 frame rate
+typedef enum
+{
+    OV7670_NIGHT_MODE_OFF = 0, ///< Disable night mode
+    OV7670_NIGHT_MODE_2,       ///< Night mode 1/2 frame rate
+    OV7670_NIGHT_MODE_4,       ///< Night mode 1/4 frame rate
+    OV7670_NIGHT_MODE_8,       ///< Night mode 1/8 frame rate
 } OV7670_night_mode;
 
 /**
@@ -82,29 +91,32 @@ early, but if middle elements aren't needed must still be assigned some
 unused value (e.g. 0). On Arduino platform, SDA/SCL are dictated by the
 Wire instance and don't need to be set here. See example code.
 */
-typedef struct {
-  OV7670_pin enable;  ///< Also called PWDN, or set to -1 and tie to GND
-  OV7670_pin reset;   ///< Cam reset, or set to -1 and tie to 3.3V
-  OV7670_pin xclk;    ///< MCU clock out / cam clock in
-  OV7670_pin pclk;    ///< Cam clock out / MCU clock in
-  OV7670_pin vsync;   ///< Also called DEN1
-  OV7670_pin hsync;   ///< Also called DEN2
-  OV7670_pin data[8]; ///< Camera parallel data out
-  OV7670_pin sda;     ///< I2C data
-  OV7670_pin scl;     ///< I2C clock
+typedef struct
+{
+    OV7670_pin enable;  ///< Also called PWDN, or set to -1 and tie to GND
+    OV7670_pin reset;   ///< Cam reset, or set to -1 and tie to 3.3V
+    OV7670_pin xclk;    ///< MCU clock out / cam clock in
+    OV7670_pin pclk;    ///< Cam clock out / MCU clock in
+    OV7670_pin vsync;   ///< Also called DEN1
+    OV7670_pin hsync;   ///< Also called DEN2
+    OV7670_pin data[8]; ///< Camera parallel data out
+    OV7670_pin sda;     ///< I2C data
+    OV7670_pin scl;     ///< I2C clock
 } OV7670_pins;
 
 /** Address/value combo for OV7670 camera commands. */
-typedef struct {
-  uint8_t reg;   ///< Register address
-  uint8_t value; ///< Value to store
+typedef struct
+{
+    uint8_t reg;   ///< Register address
+    uint8_t value; ///< Value to store
 } OV7670_command;
 
 /** Architecture+platform combination structure. */
-typedef struct {
-  OV7670_arch *arch; ///< Architecture-specific config data
-  OV7670_pins *pins; ///< Physical connection to camera
-  void *platform;    ///< Platform-specific data (e.g. Arduino C++ object)
+typedef struct
+{
+    OV7670_arch *arch; ///< Architecture-specific config data
+    OV7670_pins *pins; ///< Physical connection to camera
+    void *platform;    ///< Platform-specific data (e.g. Arduino C++ object)
 } OV7670_host;
 
 #define OV7670_ADDR 0x21 //< Default I2C address if unspecified
@@ -300,55 +312,54 @@ typedef struct {
 // access them.
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-// Architecture- and platform-neutral initialization function.
-// Called by the platform init function, this in turn may call an
-// architecture-specific init function.
-OV7670_status OV7670_begin(OV7670_host *host, OV7670_colorspace colorspace,
-                           OV7670_size size, float fps);
+    // Architecture- and platform-neutral initialization function.
+    // Called by the platform init function, this in turn may call an
+    // architecture-specific init function.
+    OV7670_status OV7670_begin(OV7670_host *host, OV7670_colorspace colorspace, OV7670_size size, float fps);
 
-OV7670_status OV7670_set_format(void *platform, OV7670_colorspace colorspace);
+    OV7670_status OV7670_set_format(void *platform, OV7670_colorspace colorspace);
 
-// Configure camera frame rate. Actual resulting frame rate (returned) may
-// be different depending on available clock frequencies. Result will only
-// exceed input if necessary for minimum supported rate, but this is very
-// rare, typically below 1 fps. In all other cases, result will be equal
-// or less than the requested rate, up to a maximum of 30 fps (the "or less"
-// is because requested fps may be based on other host hardware timing
-// constraints (e.g. screen) and rounding up to a closer-but-higher frame
-// rate would be problematic). There is no hardcoded set of fixed frame
-// rates because it varies with architecture, depending on OV7670_XCLK_HZ.
-float OV7670_set_fps(void *platform, float fps);
+    // Configure camera frame rate. Actual resulting frame rate (returned) may
+    // be different depending on available clock frequencies. Result will only
+    // exceed input if necessary for minimum supported rate, but this is very
+    // rare, typically below 1 fps. In all other cases, result will be equal
+    // or less than the requested rate, up to a maximum of 30 fps (the "or less"
+    // is because requested fps may be based on other host hardware timing
+    // constraints (e.g. screen) and rounding up to a closer-but-higher frame
+    // rate would be problematic). There is no hardcoded set of fixed frame
+    // rates because it varies with architecture, depending on OV7670_XCLK_HZ.
+    float OV7670_set_fps(void *platform, float fps);
 
-// Configure camera resolution to one of the supported frame sizes
-// (powers-of-two divisions of VGA -- 640x480 down to 40x30).
-void OV7670_set_size(void *platform, OV7670_size size);
+    // Configure camera resolution to one of the supported frame sizes
+    // (powers-of-two divisions of VGA -- 640x480 down to 40x30).
+    void OV7670_set_size(void *platform, OV7670_size size);
 
-// Lower-level resolution register fiddling function, exposed so dev code
-// can test variations for OV7670_set_size() windowing defaults.
-void OV7670_frame_control(void *platform, uint8_t size, uint8_t vstart,
-                          uint16_t hstart, uint8_t edge_offset,
-                          uint8_t pclk_delay);
+    // Lower-level resolution register fiddling function, exposed so dev code
+    // can test variations for OV7670_set_size() windowing defaults.
+    void OV7670_frame_control(void *platform, uint8_t size, uint8_t vstart, uint16_t hstart, uint8_t edge_offset,
+                              uint8_t pclk_delay);
 
-// Select one of the camera's night modes (or disable).
-// Trades off frame rate for less grainy images in low light.
-void OV7670_night(void *platform, OV7670_night_mode night);
+    // Select one of the camera's night modes (or disable).
+    // Trades off frame rate for less grainy images in low light.
+    void OV7670_night(void *platform, OV7670_night_mode night);
 
-// Flips camera output on horizontal and/or vertical axes.
-void OV7670_flip(void *platform, bool flip_x, bool flip_y);
+    // Flips camera output on horizontal and/or vertical axes.
+    void OV7670_flip(void *platform, bool flip_x, bool flip_y);
 
-// Selects one of the camera's test patterns (or disable).
-// See Adafruit_OV7670.h for notes about minor visual bug here.
-void OV7670_test_pattern(void *platform, OV7670_pattern pattern);
+    // Selects one of the camera's test patterns (or disable).
+    // See Adafruit_OV7670.h for notes about minor visual bug here.
+    void OV7670_test_pattern(void *platform, OV7670_pattern pattern);
 
-// Convert Y (brightness) component YUV image in RAM to RGB565 big-
-// endian format for preview on TFT display. Data is overwritten in-place,
-// Y is truncated and UV elements are lost. No practical use outside TFT
-// preview. If you need actual grayscale 0-255 data, just access the low
-// byte of each 16-bit YUV pixel.
-void OV7670_Y2RGB565(uint16_t *ptr, uint32_t len);
+    // Convert Y (brightness) component YUV image in RAM to RGB565 big-
+    // endian format for preview on TFT display. Data is overwritten in-place,
+    // Y is truncated and UV elements are lost. No practical use outside TFT
+    // preview. If you need actual grayscale 0-255 data, just access the low
+    // byte of each 16-bit YUV pixel.
+    void OV7670_Y2RGB565(uint16_t *ptr, uint32_t len);
 
 #ifdef __cplusplus
 };

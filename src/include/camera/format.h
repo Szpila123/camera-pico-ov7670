@@ -8,9 +8,10 @@
 
 #include <stdint.h>
 
-#define FORMAT_CODE(a, b, c, d) (((uint32_t)(a) << 0) | ((uint32_t)(b) << 8) | ((uint32_t)(c) << 16) | ((uint32_t)(d) << 24))
+#define FORMAT_CODE(a, b, c, d)                                                                                        \
+    (((uint32_t)(a) << 0) | ((uint32_t)(b) << 8) | ((uint32_t)(c) << 16) | ((uint32_t)(d) << 24))
 
-#define FORMAT_YUYV   FORMAT_CODE('Y', 'U', 'Y', 'V')
+#define FORMAT_YUYV FORMAT_CODE('Y', 'U', 'Y', 'V')
 #define FORMAT_RGB565 FORMAT_CODE('R', 'G', '1', '6')
 #define FORMAT_YUV422 FORMAT_CODE('Y', 'U', '1', '6')
 
